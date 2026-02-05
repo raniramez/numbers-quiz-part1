@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"="width=device-width, initial-scale=1.0">
+    <title>IGCSE Chapter 1: Numbers - Practice Quiz</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #000;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+        
+        .quiz-info {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .quiz-info p {
+            margin: 8px 0;
+            font-size: 16px;
+        }
+        
+        .progress-container {
+            background-color: #e0e0e0;
+            height: 8px;
+            margin: 15px 0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .question-container {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+        
+        .question-container.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .question-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        
+        .tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .topic-tag {
+            background-color: #e8eaf6;
+            color: #5e35b1;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .difficulty-tag {
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        
+        .difficulty-easy {
+            background-color: #c8e6c9;
+            color: #2e7d32;
+        }
+        
+        .difficulty-medium {
+            background-color: #fff9c4;
+            color: #f57f17;
+        }
+        
+        .difficulty-hard {
+            background-color: #ffcdd2;
+            color: #c62828;
+        }
+        
+        .question-text {
+            font-size: 20px;
+            font-weight: 600;
+            margin: 20px 0;
+            color: #333;
+            line-height: 1.5;
+        }
+        
+        .options {
+            margin: 25px 0;
+        }
+        
+        .option {
+            background-color: #f8f9fa;
+            border: 2px solid #dee2e6;
+            padding: 15px 20px;
+            margin: 12px 0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 16px;
+        }
+        
+        .option:hover {
+            background-color: #e9ecef;
+            border-color: #adb5bd;
+            transform: translateX(5px);
+        }
+        
+        .option.selected {
+            background-color: #e3f2fd;
+            border-color: #2196f3;
+        }
+        
+        .option.correct {
+            background-color: #c8e6c9;
+            border-color: #4caf50;
+            animation: correctPulse 0.5s;
+        }
+        
+        .option.incorrect {
+            background-color: #ffcdd2;
+            border-color: #f44336;
+            animation: shake 0.5s;
+        }
+        
+        @keyframes correctPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        
+        .feedback {
+            display: none;
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+        
+        .feedback.show {
+            display: block;
+            animation: slideDown 0.3s;
+        }
+        
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .feedback.correct {
+            background-color: #c8e6c9;
+            border-left: 4px solid #4caf50;
+            color: #2e7d32;
+        }
+        
+        .feedback.incorrect {
+            background-color: #ffcdd2;
+            border-left: 4px solid #f44336;
+            color: #c62828;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        button {
+            flex: 1;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-submit {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-submit:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-submit:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .btn-next {
+            background-color: #4caf50;
+            color: white;
+            display: none;
+        }
+        
+        .btn-next:hover {
+            background-color: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+        }
+        
+        .btn-next.show {
+            display: block;
+        }
+        
+        .results {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+        }
+        
+        .results.show {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        .score-circle {
+            width: 200px;
+            height: 200px;
+            margin: 30px auto;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: bold;
+            color: white;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .score-excellent {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+        
+        .score-good {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .score-fair {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        .score-text {
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        
+        .results h2 {
+            font-size: 32px;
+            margin: 20px 0;
+        }
+        
+        .results-details {
+            background-color: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 30px 0;
+            text-align: left;
+        }
+        
+        .results-details h3 {
+            margin-bottom: 15px;
+            color: #667eea;
+        }
+        
+        .topic-result {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .topic-result:last-child {
+            border-bottom: none;
+        }
+        
+        .btn-restart {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 40px;
+            font-size: 18px;
+            margin-top: 20px;
+        }
+        
+        .btn-restart:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .start-screen {
+            text-align: center;
+            padding: 40px 20px;
+        }
+        
+        .start-screen h2 {
+            font-size: 28px;
+            margin: 20px 0;
+            color: #333;
+        }
+        
+        .start-screen ul {
+            text-align: left;
+            max-width: 500px;
+            margin: 30px auto;
+            background-color: #f8f9fa;
+            padding: 25px 40px;
+            border-radius: 10px;
+        }
+        
+        .start-screen li {
+            margin: 12px 0;
+            font-size: 16px;
+        }
+        
+        .difficulty-info {
+            background-color: #fff3e0;
+            border: 2px solid #ff9800;
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 500px;
+            border-radius: 10px;
+        }
+        
+        .difficulty-info h3 {
+            color: #e65100;
+            margin-bottom: 10px;
+        }
+        
+        .btn-start {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 50px;
+            font-size: 20px;
+            margin-top: 30px;
+        }
+        
+        .btn-start:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 24px;
+            }
+            
+            .question-text {
+                font-size: 18px;
+            }
+            
+            .buttons {
+                flex-direction: column;
+            }
+            
+            .question-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h1>📚 IGCSE Chapter 1: Numbers</h1>
+            <p>Practice Quiz - Mixed Difficulty</p>
+        </div>
+
+        <!-- Start Screen -->
+        <div class="start-screen" id="startScreen">
+            <h2>Welcome to Your Numbers Quiz!</h2>
+            <p style="font-size: 18px; margin: 20px 0;">Test your understanding of the following topics:</p>
+            <ul>
+                <li>✓ Place Value</li>
+                <li>✓ Divisibility Rules</li>
+                <li>✓ Types of Numbers</li>
+                <li>✓ Factors and Multiples</li>
+                <li>✓ HCF and LCM</li>
+                <li>✓ Powers and Roots</li>
+                <li>✓ Integers</li>
+                <li>✓ BIDMAS</li>
+                <li>✓ Decimals</li>
+                <li>✓ Standard Form</li>
+                <li>✓ Rounding and Estimation</li>
+                <li>✓ <strong>Fractions (Extra Focus!)</strong></li>
+            </ul>
+            
+            <div class="difficulty-info">
+                <h3>🎯 Mixed Difficulty Levels</h3>
+                <p style="margin: 10px 0;"><span style="background-color: #c8e6c9; padding: 3px 8px; border-radius: 5px;">Easy</span> - Basic concepts</p>
+                <p style="margin: 10px 0;"><span style="background-color: #fff9c4; padding: 3px 8px; border-radius: 5px;">Medium</span> - Requires thinking</p>
+                <p style="margin: 10px 0;"><span style="background-color: #ffcdd2; padding: 3px 8px; border-radius: 5px;">Hard</span> - Challenging problems!</p>
+            </div>
+            
+            <p style="font-size: 16px; color: #666; margin: 20px 0;">
+                <strong>60 questions</strong> • Multiple choice • Instant feedback
+            </p>
+            <button class="btn-start" onclick="startQuiz()">Start Quiz</button>
+        </div>
+
+        <!-- Quiz Info -->
+        <div class="quiz-info" id="quizInfo" style="display: none;">
+            <p><strong>Question <span id="currentQuestion">1</span> of <span id="totalQuestions">60</span></strong></p>
+            <p>Score: <strong><span id="score">0</span> / <span id="answered">0</span></strong></p>
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+        </div>
+
+        <!-- Quiz Content -->
+        <div class="content" id="quizContent" style="display: none;">
+            <!-- Questions will be inserted here dynamically -->
+        </div>
+
+        <!-- Results Screen -->
+        <div class="results" id="results">
+            <div class="score-circle" id="scoreCircle">
+                <div>
+                    <span id="finalScore">0</span>%
+                    <div class="score-text" id="scoreGrade">Great!</div>
+                </div>
+            </div>
+            <h2 id="resultsMessage">Well Done!</h2>
+            <p style="font-size: 18px; margin: 20px 0;">
+                You scored <strong><span id="finalScoreText">0</span> out of 60</strong>
+            </p>
+            
+            <div class="results-details">
+                <h3>Performance by Topic:</h3>
+                <div id="topicBreakdown"></div>
+            </div>
+            
+            <button class="btn-restart" onclick="restartQuiz()">Try Again</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {topic: "Place Value", difficulty: "easy", question: "In the number 4,567.89, what is the value of the digit 6?", options: ["6", "600", "0.6", "60"], correct: 3, explanation: "The digit 6 is in the tens place, so its value is 60."},
+            {topic: "Place Value", difficulty: "easy", question: "What is the value of the digit 3 in 0.0326?", options: ["0.003", "0.3", "3", "0.03"], correct: 3, explanation: "The digit 3 is in the hundredths place, so its value is 0.03."},
+            {topic: "Place Value", difficulty: "medium", question: "In the number 52,831, which digit is in the hundreds place?", options: ["2", "3", "8", "5"], correct: 2, explanation: "Reading from right: 1 (ones), 3 (tens), 8 (hundreds), 2 (thousands), 5 (ten thousands)."},
+            {topic: "Place Value", difficulty: "medium", question: "What is 10 times larger than 0.045?", options: ["0.0045", "4.5", "0.45", "45"], correct: 2, explanation: "Multiply by 10 means move decimal one place right: 0.045 × 10 = 0.45"},
+            {topic: "Divisibility Rules", difficulty: "easy", question: "Which of these numbers is divisible by 3?", options: ["127", "125", "234", "251"], correct: 2, explanation: "234 is divisible by 3 because the sum of its digits (2+3+4=9) is divisible by 3."},
+            {topic: "Divisibility Rules", difficulty: "medium", question: "A number is divisible by 6 if it is divisible by:", options: ["2 and 5", "3 and 4", "2 and 3", "2 and 4"], correct: 2, explanation: "A number is divisible by 6 if it's divisible by both 2 AND 3."},
+            {topic: "Divisibility Rules", difficulty: "medium", question: "Which number is divisible by 9?", options: ["678", "456", "567", "789"], correct: 2, explanation: "567: sum of digits = 5+6+7 = 18, which is divisible by 9."},
+            {topic: "Divisibility Rules", difficulty: "hard", question: "Which of these numbers is divisible by both 8 and 9?", options: ["252", "144", "216", "180"], correct: 2, explanation: "216: Last 3 digits (216÷8=27 ✓), digit sum (2+1+6=9, divisible by 9 ✓). So 216 is divisible by both!"},
+            {topic: "Divisibility Rules", difficulty: "easy", question: "Is 150 divisible by 5?", options: ["Can't tell", "No", "Yes", "Only by 10"], correct: 2, explanation: "Last digit is 0, so yes, 150 is divisible by 5."},
+            {topic: "Types of Numbers", difficulty: "easy", question: "Which of the following is NOT a prime number?", options: ["21", "2", "17", "29"], correct: 0, explanation: "21 is not prime because it has factors 1, 3, 7, and 21. Prime numbers only have two factors."},
+            {topic: "Types of Numbers", difficulty: "medium", question: "Which number is both a square number and a cube number?", options: ["100", "16", "64", "27"], correct: 2, explanation: "64 = 8² (square) and 64 = 4³ (cube), so it's both!"},
+            {topic: "Types of Numbers", difficulty: "medium", question: "What is the next prime number after 19?", options: ["22", "20", "21", "23"], correct: 3, explanation: "23 is prime. 20, 21, and 22 are all composite numbers."},
+            {topic: "Types of Numbers", difficulty: "hard", question: "How many prime numbers are there between 20 and 40?", options: ["3", "6", "4", "5"], correct: 2, explanation: "Prime numbers between 20 and 40: 23, 29, 31, 37. That's 4 primes."},
+            {topic: "Types of Numbers", difficulty: "medium", question: "Which is a cube number?", options: ["36", "16", "27", "25"], correct: 2, explanation: "27 = 3³ = 3 × 3 × 3"},
+            {topic: "Factors & Multiples", difficulty: "easy", question: "How many factors does 12 have?", options: ["7", "6", "4", "5"], correct: 1, explanation: "The factors of 12 are: 1, 2, 3, 4, 6, 12. That's 6 factors."},
+            {topic: "Factors & Multiples", difficulty: "medium", question: "Which is a factor of both 24 and 36?", options: ["12", "5", "18", "8"], correct: 0, explanation: "12 divides both 24 (24÷12=2) and 36 (36÷12=3)."},
+            {topic: "Factors & Multiples", difficulty: "hard", question: "How many factors does 60 have?", options: ["11", "12", "10", "13"], correct: 1, explanation: "Factors of 60: 1, 2, 3, 4, 5, 6, 10, 12, 15, 20, 30, 60. That's 12 factors."},
+            {topic: "Factors & Multiples", difficulty: "hard", question: "Which number has exactly 3 factors?", options: ["6", "9", "4", "12"], correct: 1, explanation: "9 has factors: 1, 3, 9. That's exactly 3 factors. (Only perfect squares of primes have exactly 3 factors)"},
+            {topic: "HCF & LCM", difficulty: "easy", question: "What is the HCF of 12 and 18?", options: ["9", "6", "3", "2"], correct: 1, explanation: "Factors of 12: 1, 2, 3, 4, 6, 12. Factors of 18: 1, 2, 3, 6, 9, 18. The highest common factor is 6."},
+            {topic: "HCF & LCM", difficulty: "easy", question: "What is the LCM of 4 and 6?", options: ["2", "24", "8", "12"], correct: 3, explanation: "Multiples of 4: 4, 8, 12, 16... Multiples of 6: 6, 12, 18... The least common multiple is 12."},
+            {topic: "HCF & LCM", difficulty: "medium", question: "What is the LCM of 6 and 8?", options: ["16", "48", "12", "24"], correct: 3, explanation: "Multiples of 6: 6, 12, 18, 24... Multiples of 8: 8, 16, 24... LCM = 24."},
+            {topic: "HCF & LCM", difficulty: "hard", question: "What is the HCF of 48 and 72?", options: ["12", "18", "24", "36"], correct: 2, explanation: "Prime factorization: 48 = 2⁴×3, 72 = 2³×3². HCF = 2³×3 = 8×3 = 24."},
+            {topic: "HCF & LCM", difficulty: "medium", question: "What is the HCF of 8 and 12?", options: ["2", "6", "4", "8"], correct: 2, explanation: "Factors of 8: 1, 2, 4, 8. Factors of 12: 1, 2, 3, 4, 6, 12. HCF = 4"},
+            {topic: "Powers & Roots", difficulty: "easy", question: "What is 2³ × 2⁴?", options: ["4⁷", "6⁴", "2¹²", "2⁷"], correct: 3, explanation: "When multiplying with the same base, add the powers: 2³ × 2⁴ = 2³⁺⁴ = 2⁷"},
+            {topic: "Powers & Roots", difficulty: "medium", question: "What is 3⁻²?", options: ["6", "1/9", "-6", "-9"], correct: 1, explanation: "3⁻² = 1/3² = 1/9. Negative power means reciprocal."},
+            {topic: "Powers & Roots", difficulty: "medium", question: "What is √144?", options: ["11", "14", "12", "13"], correct: 2, explanation: "√144 = 12 because 12 × 12 = 144"},
+            {topic: "Powers & Roots", difficulty: "hard", question: "Simplify: (2³)² ÷ 2⁴", options: ["16", "8", "2", "4"], correct: 3, explanation: "(2³)² = 2⁶. Then 2⁶ ÷ 2⁴ = 2⁶⁻⁴ = 2² = 4."},
+            {topic: "Powers & Roots", difficulty: "medium", question: "What is ³√125?", options: ["3", "15", "5", "25"], correct: 2, explanation: "³√125 = 5 because 5 × 5 × 5 = 125"},
+            {topic: "Powers & Roots", difficulty: "easy", question: "What is 10²?", options: ["20", "100", "1000", "10"], correct: 1, explanation: "10² = 10 × 10 = 100"},
+            {topic: "Integers", difficulty: "easy", question: "What is -5 + (-3)?", options: ["-8", "-2", "2", "8"], correct: 0, explanation: "When adding two negative numbers, add them and keep the negative sign: -5 + (-3) = -8"},
+            {topic: "Integers", difficulty: "medium", question: "What is 7 - (-3)?", options: ["-4", "4", "-10", "10"], correct: 3, explanation: "Subtracting a negative is the same as adding: 7 - (-3) = 7 + 3 = 10"},
+            {topic: "Integers", difficulty: "hard", question: "What is (-2)³ × (-3)²?", options: ["36", "-72", "-36", "72"], correct: 1, explanation: "(-2)³ = -8 and (-3)² = 9. Then -8 × 9 = -72."},
+            {topic: "Integers", difficulty: "medium", question: "What is -20 ÷ (-4)?", options: ["-5", "16", "-16", "5"], correct: 3, explanation: "Same signs give positive: -20 ÷ (-4) = 5"},
+            {topic: "Integers", difficulty: "medium", question: "What is -4 × -6?", options: ["-10", "10", "-24", "24"], correct: 3, explanation: "When multiplying two negative numbers, the result is positive: -4 × -6 = 24"},
+            {topic: "BIDMAS", difficulty: "easy", question: "Calculate: 3 + 4 × 2", options: ["10", "14", "11", "16"], correct: 2, explanation: "Following BIDMAS, do multiplication first: 4 × 2 = 8, then 3 + 8 = 11"},
+            {topic: "BIDMAS", difficulty: "medium", question: "Calculate: (5 + 3)² ÷ 4", options: ["4", "16", "32", "8"], correct: 1, explanation: "Brackets first: 5 + 3 = 8. Then indices: 8² = 64. Then divide: 64 ÷ 4 = 16"},
+            {topic: "BIDMAS", difficulty: "hard", question: "Calculate: 2 + 3² × 2 - 4 ÷ 2", options: ["16", "18", "22", "20"], correct: 1, explanation: "Indices first: 3² = 9. Then: 9 × 2 = 18, 4 ÷ 2 = 2. Finally: 2 + 18 - 2 = 18."},
+            {topic: "BIDMAS", difficulty: "medium", question: "Calculate: 10 - 6 ÷ 2", options: ["7", "8", "3", "2"], correct: 0, explanation: "Division first: 6 ÷ 2 = 3. Then: 10 - 3 = 7"},
+            {topic: "Decimals", difficulty: "easy", question: "What is 0.3 × 0.2?", options: ["6", "0.6", "0.06", "0.006"], correct: 2, explanation: "3 × 2 = 6. Count decimal places: 0.3 (1) × 0.2 (1) = 2 places total, so 0.06"},
+            {topic: "Decimals", difficulty: "medium", question: "What is 4.5 ÷ 0.5?", options: ["0.9", "90", "0.09", "9"], correct: 3, explanation: "Multiply both by 10: 45 ÷ 5 = 9"},
+            {topic: "Decimals", difficulty: "medium", question: "Express 3/8 as a decimal:", options: ["0.385", "0.400", "0.375", "0.325"], correct: 2, explanation: "3 ÷ 8 = 0.375"},
+            {topic: "Decimals", difficulty: "medium", question: "What is 2.5 × 4?", options: ["8", "6.5", "12", "10"], correct: 3, explanation: "2.5 × 4 = 10"},
+            {topic: "Decimals", difficulty: "easy", question: "What is 0.5 + 0.3?", options: ["0.08", "8", "80", "0.8"], correct: 3, explanation: "0.5 + 0.3 = 0.8"},
+            {topic: "Standard Form", difficulty: "easy", question: "Write 45,000 in standard form:", options: ["4.5 × 10⁴", "0.45 × 10⁵", "4.5 × 10³", "45 × 10³"], correct: 0, explanation: "Move decimal 4 places left: 45,000 = 4.5 × 10⁴"},
+            {topic: "Standard Form", difficulty: "medium", question: "Write 0.00056 in standard form:", options: ["5.6 × 10⁻⁴", "5.6 × 10⁻³", "0.56 × 10⁻³", "56 × 10⁻⁵"], correct: 0, explanation: "Move decimal 4 places right: 0.00056 = 5.6 × 10⁻⁴"},
+            {topic: "Standard Form", difficulty: "hard", question: "Calculate: (3 × 10⁴) × (2 × 10⁻⁶)", options: ["6 × 10⁻¹⁰", "6 × 10⁻²", "6 × 10²", "6 × 10⁻¹"], correct: 1, explanation: "(3 × 2) × (10⁴ × 10⁻⁶) = 6 × 10⁴⁺⁽⁻⁶⁾ = 6 × 10⁻²"},
+            {topic: "Standard Form", difficulty: "medium", question: "Write 230,000 in standard form:", options: ["0.23 × 10⁶", "23 × 10⁴", "2.3 × 10⁵", "2.3 × 10⁴"], correct: 2, explanation: "Move decimal 5 places left: 230,000 = 2.3 × 10⁵"},
+            {topic: "Rounding", difficulty: "medium", question: "Round 3.4567 to 2 decimal places:", options: ["3.5", "3.46", "3.4", "3.45"], correct: 1, explanation: "Look at the 3rd decimal (6). Since 6 ≥ 5, round up: 3.46"},
+            {topic: "Rounding", difficulty: "hard", question: "Round 0.004582 to 2 significant figures:", options: ["0.005", "0.0046", "0.00458", "0.0045"], correct: 1, explanation: "First non-zero digit is 4. Take 4 and 5. Next digit is 8 (≥5), so round up: 0.0046"},
+            {topic: "Rounding", difficulty: "easy", question: "Round 47.8 to the nearest whole number:", options: ["48", "47", "45", "50"], correct: 0, explanation: "7 after decimal is ≥ 5, so round up to 48"},
+            {topic: "Fractions", difficulty: "easy", question: "What is 1/4 + 1/4?", options: ["2/8", "1/2", "1/8", "2/4"], correct: 1, explanation: "1/4 + 1/4 = 2/4 = 1/2"},
+            {topic: "Fractions", difficulty: "easy", question: "Simplify 12/18:", options: ["2/3", "4/6", "3/4", "6/9"], correct: 0, explanation: "HCF of 12 and 18 is 6. Divide both by 6: 12÷6 / 18÷6 = 2/3"},
+            {topic: "Fractions", difficulty: "medium", question: "What is 1/4 + 1/3?", options: ["7/12", "5/12", "2/7", "1/2"], correct: 0, explanation: "Common denominator is 12: 1/4 = 3/12, 1/3 = 4/12. So 3/12 + 4/12 = 7/12"},
+            {topic: "Fractions", difficulty: "medium", question: "What is 2/3 × 3/4?", options: ["6/12", "9/8", "5/7", "1/2"], correct: 3, explanation: "Multiply across: (2×3)/(3×4) = 6/12 = 1/2"},
+            {topic: "Fractions", difficulty: "medium", question: "What is 3/5 - 1/4?", options: ["2/5", "2/1", "7/20", "11/20"], correct: 2, explanation: "Common denominator is 20: 3/5 = 12/20, 1/4 = 5/20. So 12/20 - 5/20 = 7/20"},
+            {topic: "Fractions", difficulty: "medium", question: "What is 2/5 ÷ 3/4?", options: ["5/6", "6/20", "3/10", "8/15"], correct: 3, explanation: "Flip and multiply: 2/5 × 4/3 = 8/15"},
+            {topic: "Fractions", difficulty: "medium", question: "Convert 2 3/4 to an improper fraction:", options: ["11/4", "8/4", "9/4", "10/4"], correct: 0, explanation: "(2 × 4 + 3)/4 = 11/4"},
+            {topic: "Fractions", difficulty: "hard", question: "What is 3/4 of 20?", options: ["15", "16", "18", "12"], correct: 0, explanation: "20 ÷ 4 = 5 (one quarter), then 5 × 3 = 15 (three quarters)"},
+            {topic: "Fractions", difficulty: "hard", question: "Calculate: 2 1/3 - 1 5/6", options: ["1/3", "2/3", "1/2", "5/6"], correct: 2, explanation: "Convert: 2 1/3 = 7/3 = 14/6 and 1 5/6 = 11/6. Then 14/6 - 11/6 = 3/6 = 1/2"}
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let answered = 0;
+        let selectedAnswer = null;
+        let topicScores = {};
+
+        function startQuiz() {
+            document.getElementById('startScreen').style.display = 'none';
+            document.getElementById('quizInfo').style.display = 'block';
+            document.getElementById('quizContent').style.display = 'block';
+            
+            questions.forEach(q => {
+                if (!topicScores[q.topic]) {
+                    topicScores[q.topic] = { correct: 0, total: 0 };
+                }
+                topicScores[q.topic].total++;
+            });
+            
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const question = questions[currentQuestionIndex];
+            const quizContent = document.getElementById('quizContent');
+            const difficultyClass = `difficulty-${question.difficulty}`;
+            
+            quizContent.innerHTML = `
+                <div class="question-container active">
+                    <div class="question-header">
+                        <span class="question-number">Question ${currentQuestionIndex + 1}</span>
+                        <div class="tags">
+                            <span class="topic-tag">${question.topic}</span>
+                            <span class="difficulty-tag ${difficultyClass}">${question.difficulty.toUpperCase()}</span>
+                        </div>
+                    </div>
+                    <div class="question-text">${question.question}</div>
+                    <div class="options" id="options">
+                        ${question.options.map((option, index) => `
+                            <div class="option" onclick="selectAnswer(${index})" id="option${index}">
+                                ${String.fromCharCode(65 + index)}. ${option}
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="feedback" id="feedback"></div>
+                    <div class="buttons">
+                        <button class="btn-submit" id="submitBtn" onclick="submitAnswer()">Submit Answer</button>
+                        <button class="btn-next" id="nextBtn" onclick="nextQuestion()">
+                            ${currentQuestionIndex < questions.length - 1 ? 'Next Question →' : 'View Results'}
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            updateProgress();
+            selectedAnswer = null;
+        }
+
+        function selectAnswer(index) {
+            if (document.getElementById('submitBtn').disabled) return;
+            document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+            document.getElementById(`option${index}`).classList.add('selected');
+            selectedAnswer = index;
+            document.getElementById('submitBtn').disabled = false;
+        }
+
+        function submitAnswer() {
+            if (selectedAnswer === null) return;
+            
+            const question = questions[currentQuestionIndex];
+            const isCorrect = selectedAnswer === question.correct;
+            
+            answered++;
+            if (isCorrect) {
+                score++;
+                topicScores[question.topic].correct++;
+            }
+            
+            const feedback = document.getElementById('feedback');
+            feedback.className = `feedback show ${isCorrect ? 'correct' : 'incorrect'}`;
+            feedback.innerHTML = `<strong>${isCorrect ? '✓ Correct!' : '✗ Incorrect'}</strong><br>${question.explanation}`;
+            
+            document.getElementById(`option${question.correct}`).classList.add('correct');
+            if (!isCorrect) document.getElementById(`option${selectedAnswer}`).classList.add('incorrect');
+            
+            document.querySelectorAll('.option').forEach(opt => opt.style.pointerEvents = 'none');
+            document.getElementById('submitBtn').style.display = 'none';
+            document.getElementById('nextBtn').classList.add('show');
+            
+            updateScore();
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function updateProgress() {
+            document.getElementById('currentQuestion').textContent = currentQuestionIndex + 1;
+            document.getElementById('totalQuestions').textContent = questions.length;
+            const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        function updateScore() {
+            document.getElementById('score').textContent = score;
+            document.getElementById('answered').textContent = answered;
+        }
+
+        function showResults() {
+            document.getElementById('quizInfo').style.display = 'none';
+            document.getElementById('quizContent').style.display = 'none';
+            
+            const results = document.getElementById('results');
+            const percentage = Math.round((score / questions.length) * 100);
+            
+            document.getElementById('finalScore').textContent = percentage;
+            document.getElementById('finalScoreText').textContent = score + ' out of ' + questions.length;
+            
+            const scoreCircle = document.getElementById('scoreCircle');
+            const scoreGrade = document.getElementById('scoreGrade');
+            const resultsMessage = document.getElementById('resultsMessage');
+            
+            if (percentage >= 80) {
+                scoreCircle.className = 'score-circle score-excellent';
+                scoreGrade.textContent = 'Excellent!';
+                resultsMessage.textContent = 'Outstanding Performance!';
+            } else if (percentage >= 60) {
+                scoreCircle.className = 'score-circle score-good';
+                scoreGrade.textContent = 'Good Job!';
+                resultsMessage.textContent = 'Well Done!';
+            } else {
+                scoreCircle.className = 'score-circle score-fair';
+                scoreGrade.textContent = 'Keep Practicing!';
+                resultsMessage.textContent = 'You Can Do Better!';
+            }
+            
+            const topicBreakdown = document.getElementById('topicBreakdown');
+            let breakdownHTML = '';
+            for (const topic in topicScores) {
+                const data = topicScores[topic];
+                const topicPercentage = Math.round((data.correct / data.total) * 100);
+                breakdownHTML += `
+                    <div class="topic-result">
+                        <span><strong>${topic}</strong></span>
+                        <span>${data.correct}/${data.total} (${topicPercentage}%)</span>
+                    </div>
+                `;
+            }
+            topicBreakdown.innerHTML = breakdownHTML;
+            results.classList.add('show');
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            answered = 0;
+            selectedAnswer = null;
+            topicScores = {};
+            document.getElementById('results').classList.remove('show');
+            document.getElementById('startScreen').style.display = 'block';
+        }
+    </script>
+
+</body>
+</html>
